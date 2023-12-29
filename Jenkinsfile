@@ -4,13 +4,13 @@ pipeline {
         maven 'Maven_3_5_2'  
     }
    stages{
-    stage('CompileandRunSonarAnalysis') {
+    stage('Compile and SAST Scanning') {
             steps {	
-		sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=asgbuggywebapp -Dsonar.organization=asgbuggywebapp -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=932558e169d66a8f1d1adf470b908a46156f5844'
+		sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=natee-securityguru -Dsonar.organization=natee-securityguru -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=6a1187bc7577cd315ff682c540405c5ec144dfaa'
 			}
     }
 
-	stage('RunSCAAnalysisUsingSnyk') {
+	stage('SCA Scanning') {
             steps {		
 				withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
 					sh 'mvn snyk:test -fn'
@@ -18,7 +18,7 @@ pipeline {
 			}
     }
 
-	stage('Build') { 
+	stage('Build Image') { 
             steps { 
                withDockerRegistry([credentialsId: "dockerlogin", url: ""]) {
                  script{
@@ -28,10 +28,10 @@ pipeline {
             }
     }
 
-	stage('Push') {
+	stage('Push Image') {
             steps {
                 script{
-                    docker.withRegistry('https://145988340565.dkr.ecr.us-west-2.amazonaws.com', 'ecr:us-west-2:aws-credentials') {
+                    docker.withRegistry('https://433393113052.dkr.ecr.ap-southeast-1.amazonaws.com', 'ecr:ap-southeast-1:aws-credentials') {
                     app.push("latest")
                     }
                 }
