@@ -38,7 +38,7 @@ pipeline {
             }
     	}
 	   
-	stage('Kubernetes Deployment of ASG Bugg Web Application') {
+	stage('Deploy Buggy Web on EKS') {
 	   steps {
 	      withKubeConfig([credentialsId: 'kubelogin']) {
 		  sh('kubectl delete all --all -n devsecops')
